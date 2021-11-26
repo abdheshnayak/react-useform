@@ -1,0 +1,7 @@
+src/
+node_modules/
+coverage/
+*.test.js
+LICENSE
+pnpm-lock.yaml
+

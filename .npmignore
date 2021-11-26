@@ -1,7 +1,9 @@
 src/
 node_modules/
-coverage/
-*.test.js
 LICENSE
 pnpm-lock.yaml
-
+package-lock.json
+.travis.yaml
+.eslintrc
+.bablerc
+LICENSE

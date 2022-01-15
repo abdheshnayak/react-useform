@@ -1,9 +1,10 @@
-import PropTypes from "prop-types";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect } from "react";
+import { toast } from "react-toastify";
+import { useImmer } from "use-immer";
 
-function useForm({ initialValues, validationSchema, onSubmit }) {
-  const [values, setvalues] = useState(initialValues);
-  const [errors, seterrors] = useState({});
+function useForm({ initialValues, validationSchema, onSubmit = (_) => {} }) {
+  const [values, setValues] = useImmer(initialValues);
+  const [errors, seterrors] = useImmer({});
 
   const checkIsPresent = useCallback(
     async (path, value) => {
@@ -20,18 +21,12 @@ function useForm({ initialValues, validationSchema, onSubmit }) {
       } catch (err) {
         const res = err.inner.filter((item) => item.path === path);
         if (res.length === 0)
-          seterrors((s) => {
-            return {
-              ...s,
-              [path]: undefined,
-            };
+          seterrors((d) => {
+            d[path] = undefined;
           });
         else {
-          seterrors((s) => {
-            return {
-              ...s,
-              [path]: res[0].message,
-            };
+          seterrors((d) => {
+            d[path] = res[0].message;
           });
         }
       }
@@ -42,23 +37,50 @@ function useForm({ initialValues, validationSchema, onSubmit }) {
   useEffect(() => {
     if (Object.keys(errors).length === 0)
       Object.keys(initialValues).map((key) => {
-        seterrors((s) => {
-          return {
-            ...s,
-            [key]: undefined,
-          };
+        seterrors((d) => {
+          d[key] = undefined;
         });
         return true;
       });
   }, [initialValues, seterrors, errors]);
 
   const handleChange = (keyPath) => {
+    const keyPaths = keyPath.split(".");
+    if (keyPaths.length > 1) {
+      return (e) => {
+        setValues((d) => {
+          if (e.target.value !== false && !e.target.value) {
+            if (keyPaths.length === 2) {
+              delete d[keyPaths[0]][keyPaths[1]];
+            } else if (keyPaths.length === 3) {
+              delete d[keyPaths[0]][keyPaths[1]][keyPaths[2]];
+            } else if (keyPaths.length === 4) {
+              delete d[keyPaths[0]][keyPaths[1]][keyPaths[2]][keyPaths[3]];
+            } else if (keyPaths.length === 5) {
+              delete d[keyPaths[0]][keyPaths[1]][keyPaths[2]][keyPaths[3]][
+                keyPaths[4]
+              ];
+            }
+          }
+          if (keyPaths.length === 2) {
+            d[keyPaths[0]][keyPaths[1]] = e.target.value;
+          } else if (keyPaths.length === 3) {
+            d[keyPaths[0]][keyPaths[1]][keyPaths[2]] = e.target.value;
+          } else if (keyPaths.length === 4) {
+            d[keyPaths[0]][keyPaths[1]][keyPaths[2]][keyPaths[3]] =
+              e.target.value;
+          }
+        });
+        checkIsPresent(keyPath, e.target.value);
+      };
+    }
     return (e) => {
-      setvalues((s) => {
-        return {
-          ...s,
-          [keyPath]: e.target.value,
-        };
+      setValues((d) => {
+        if (e.target.value !== false && !e.target.value) {
+          delete d[keyPath];
+        } else {
+          d[keyPath] = e.target.value;
+        }
       });
       checkIsPresent(keyPath, e.target.value);
     };
@@ -67,42 +89,36 @@ function useForm({ initialValues, validationSchema, onSubmit }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (values instanceof Array) {
+      seterrors({});
+    }
+    // console.log(values)
     try {
       await validationSchema.validate(values, {
         abortEarly: false,
       });
       try {
-        await onSubmit(values);
+        const response = await onSubmit(values);
+        return response;
       } catch (err) {
+        console.log(err);
+        toast.error(err.message);
         // show server error
       }
     } catch (err) {
       // show field errors
+      console.log(err);
       err.inner.map((item) => {
-        seterrors((s) => {
-          return {
-            ...s,
-            [item.path]: item.message,
-          };
+        seterrors((d) => {
+          d[item.path] = item.message;
         });
         return true;
       });
+      return false;
     }
   };
 
-  return [values, errors, handleChange, handleSubmit];
+  return [values, errors, handleChange, handleSubmit, setValues];
 }
-
-useForm.propTypes = {
-  initialValues: PropTypes.object,
-  validationSchema: PropTypes.object,
-  onSubmit: PropTypes.func,
-};
-
-useForm.defaultProps = {
-  initialValues: {},
-  validationSchema: {},
-  onSubmit: () => {},
-};
 
 export default useForm;

@@ -1,6 +1,6 @@
 {
   "name": "@kavre/react-useform",
-  "version": "1.0.3",
+  "version": "1.0.7",
   "description": "",
   "main": "./lib/index.js",
   "typings": "./lib/index.js",
@@ -30,37 +30,39 @@
     "useform"
   ],
   "dependencies": {
-    "prop-types": "^15.7.2"
+    "prop-types": "^15.8.1"
   },
   "peerDependencies": {
-    "react": "^16.2.0"
+    "react": "^17.0.2",
+    "use-immer": "^0.6.0",
+    "immer": "^9.0.12"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.0",
-    "@babel/eslint-parser": "^7.15.0",
-    "@babel/preset-env": "^7.14.2",
-    "@babel/preset-react": "^7.13.13",
+    "@babel/core": "^7.16.7",
+    "@babel/eslint-parser": "^7.16.5",
+    "@babel/preset-env": "^7.16.8",
+    "@babel/preset-react": "^7.16.7",
     "@madhouselabs/eslint-config-next": "^1.0.0",
     "@madhouselabs/eslint-config-react": "^1.0.5",
     "@madhouselabs/eslint-config-react-base": "^1.0.2",
-    "autoprefixer": "^10.3.1",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-import-resolver-node": "^0.3.4",
-    "eslint-import-resolver-webpack": "^0.13.1",
-    "eslint-plugin-react-hooks": "^4.2.0",
-    "pino-pretty": "^7.1.0",
-    "prettier": "^2.3.2",
-    "eslint-plugin-prettier": "^3.4.0",
-    "babel-cli": "^6.24.1",
-    "babel-eslint": "^8.0.2",
+    "autoprefixer": "^10.4.2",
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^10.1.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb": "^15.0.1",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-jsx-a11y": "^5.0.3",
-    "eslint-plugin-react": "^7.5.1",
-    "react": "^16.2.0"
+    "eslint": "^8.6.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-node": "^0.3.6",
+    "eslint-import-resolver-webpack": "^0.13.2",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "pino-pretty": "^7.3.0",
+    "prettier": "^2.5.1",
+    "react": "^17.0.2"
   }
 }
